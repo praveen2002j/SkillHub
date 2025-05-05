@@ -40,6 +40,15 @@ const Navbar = ({ user }) => {
                             <Link to='/addfriend'>
                                 <AiOutlineUserAdd className="friend" />
                             </Link>
+                            <Link to='/allLearningProgress'>
+                                Learning Post
+                            </Link>
+                            <Link to='/addLearningProgress'>
+                                add Learning Post
+                            </Link>
+                            <Link to='/myLearningProgress'>
+                                My LearningProgress
+                            </Link>
                             <Link to='/notification'>
                                 <MdOutlineNotificationsActive className="friend" />
                             </Link>
