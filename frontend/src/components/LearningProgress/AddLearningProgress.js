@@ -38,12 +38,26 @@ function AddLearningProgress() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    // Clear error when user types
+    // start by updating the field the user just changed
+    const updated = { ...formData, [name]: value };
+  
+    // if they just switched template, auto-set the right progress to "100"
+    if (name === 'templateName') {
+      if (value === 'Completed Tutorials') {
+        updated.completedProgress  = '100';
+      } else if (value === 'Milestone Achieved') {
+        updated.milestoneProgress = '100';
+      }
+    }
+  
+    setFormData(updated);
+  
+    // clear any existing error on that field
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
   };
+  
 
   const validateForm = () => {
     const newErrors = {};
@@ -329,6 +343,7 @@ function AddLearningProgress() {
                     placeholder="0-100"
                     min="0"
                     max="100"
+                    disabled={formData.templateName === 'Completed Tutorials'}
                   />
                   {errors.completedProgress && <span className="error-message">{errors.completedProgress}</span>}
                 </div>
@@ -492,6 +507,7 @@ function AddLearningProgress() {
                       placeholder="0-100"
                       min="0"
                       max="100"
+                      disabled={formData.templateName === 'Milestone Achieved'}
                     />
                     {errors.milestoneProgress && <span className="error-message">{errors.milestoneProgress}</span>}
                   </div>

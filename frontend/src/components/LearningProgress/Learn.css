@@ -226,3 +226,13 @@
   margin-top: 70px; /* Increase this value if needed */
   padding: 1rem;
 }
+
+/* ─── label / value split ─── */
+.field-label {
+  color: #062646;  /* dark slate */
+  font-weight: 600;
+}
+
+.field-value {
+  color: #181a1a;  /* medium grey */
+}

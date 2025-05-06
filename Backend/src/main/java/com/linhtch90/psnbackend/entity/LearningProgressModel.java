@@ -30,6 +30,7 @@ public class LearningProgressModel {
     private String milestoneName;
     private String dateAchieved;
     private String proof;
+    private String proofUrl;
     private String milestoneProgress;
     private String notes;
 

@@ -318,3 +318,13 @@
   border-radius: 16px;
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
 }
+
+/* dark label + light value for detail‐items */
+.progress-card__detail-item .detail-label {
+  color:  #062646;
+  font-weight: 600;
+}
+.progress-card__detail-item .detail-value {
+  color:#050505;
+  margin-left: 0.25rem;
+}
