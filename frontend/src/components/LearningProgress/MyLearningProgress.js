@@ -277,7 +277,8 @@ function MyLearningProgress() {
                       </div>
                       <div className="progress-card__detail-item">
                         <FaClock className="progress-card__detail-icon" />
-                        <span>Duration: {item.duration}</span>
+                        <span>Duration: {item.duration} hours</span>
+
                       </div>
                       <div className="progress-card__progress-bar">
                         <div 

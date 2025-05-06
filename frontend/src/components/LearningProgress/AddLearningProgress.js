@@ -58,7 +58,10 @@ function AddLearningProgress() {
       if (!formData.learningSkills.trim()) newErrors.learningSkills = 'Learning skills are required';
       if (!formData.date) newErrors.date = 'Date is required';
       if (!formData.tutorialName.trim()) newErrors.tutorialName = 'Tutorial name is required';
-      if (!formData.duration.trim()) newErrors.duration = 'Duration is required';
+      if (!formData.duration || isNaN(formData.duration)) {
+        newErrors.duration = 'Please enter a valid number';
+      }
+      
       if (!formData.completedProgress || isNaN(formData.completedProgress)) {
         newErrors.completedProgress = 'Please enter a valid number (0-100)';
       } else if (formData.completedProgress < 0 || formData.completedProgress > 100) {
@@ -286,17 +289,20 @@ function AddLearningProgress() {
                   </div>
                   
                   <div className={`form-group ${errors.duration ? 'has-error' : ''}`}>
-                    <label className="form-label">Duration*</label>
+                    <label className="form-label">Duration (Hours)*</label>
                     <input 
-                      type='text' 
+                      type='number' 
                       name='duration' 
                       value={formData.duration} 
                       onChange={handleChange}
                       className="form-input"
-                      placeholder="e.g., 2 hours"
+                      placeholder="e.g., 4"
+                      min="0"
+                      step="0.5" // optional if you want to allow 0.5-hour steps
                     />
                     {errors.duration && <span className="error-message">{errors.duration}</span>}
                   </div>
+
                 </div>
                 
                 <div className={`form-group ${errors.tutorialName ? 'has-error' : ''}`}>
