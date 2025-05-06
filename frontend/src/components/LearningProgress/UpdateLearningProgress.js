@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { FaBook, FaStar, FaFlagCheckered, FaArrowLeft } from 'react-icons/fa';
-import Navbar from '../components/Navbar';
+import LearningNavbar from '../components/LearningNavbar';
+
+import { useNavigate, useParams } from 'react-router-dom';
+
 
 function UpdateLearningProgress() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -38,7 +42,19 @@ function UpdateLearningProgress() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/learningProgress/${id}`);
+        const token = localStorage.getItem('psnToken');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+  
+        const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
         if (response.ok) {
           const data = await response.json();
           setFormData(data);
@@ -49,10 +65,10 @@ function UpdateLearningProgress() {
         console.error('Error:', error);
       }
     };
-
+  
     fetchData();
   }, [id]);
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -113,23 +129,43 @@ function UpdateLearningProgress() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     if (!validateForm()) return;
-    
+  
     setIsSubmitting(true);
-
+  
     try {
+      const token = localStorage.getItem('psnToken'); // ✅ Get token from localStorage
+  
+      if (!token) {
+        alert('You are not logged in. Please sign in.');
+        window.location.href = '/signin';
+        return;
+      }
+      const fullName = localStorage.getItem('fullName');
+      const userID = localStorage.getItem('userId');
+      
+      const data = {
+        ...formData,
+        fullName,
+        userID
+      };
+      
+      console.log("Submitting update with:", data); // optional debug
+      
       const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // ✅ Send token here
         },
-        body: JSON.stringify(formData),
-      });
+        body: JSON.stringify(data),
 
+      });
+  
       if (response.ok) {
         alert('Learning progress updated successfully!');
-        window.location.href = '/myLearningProgress';
+        navigate('/myLearningProgress'); // ✅ This redirects without page reload
       } else {
         alert('Failed to update learning progress.');
       }
@@ -140,6 +176,7 @@ function UpdateLearningProgress() {
       setIsSubmitting(false);
     }
   };
+  
 
   const getTemplateIcon = () => {
     switch(formData.templateName) {
@@ -156,10 +193,12 @@ function UpdateLearningProgress() {
 
   return (
     <div className="update-learning-progress">
-      <Navbar/>
+      <LearningNavbar />
 
-      <div className='form-container'>
-        <div className='form-container__inner'>
+
+      <div className="page-container">
+        <div className="form-wrapper">
+
           <h2 className="form-title">
             {getTemplateIcon()}
             Update Learning Progress

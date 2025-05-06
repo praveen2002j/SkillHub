@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FaBook, FaStar, FaFlagCheckered, FaArrowLeft } from 'react-icons/fa';
 import './AddLearningProgress.css';
-import Navbar from '../components/Navbar';
+import LearningNavbar from '../components/LearningNavbar';
+
 
 function AddLearningProgress() {
   const [formData, setFormData] = useState({
@@ -115,14 +116,24 @@ function AddLearningProgress() {
       window.location.href = '/';
       return;
     }
-
-    const data = { ...formData, userID, fullName };
+    //////
+    const data = { ...formData, userID, fullName }; // ✅ This is key!
 
     try {
-      const response = await fetch('http://localhost:8080/learningProgress', { 
+      const token = localStorage.getItem('psnToken'); // get token from localStorage
+      /////
+      if (!token) {
+        alert('You are not logged in. Please sign in.');
+        window.location.href = '/signin'; // optional redirect
+        return;
+      }
+      
+
+      const response = await fetch('http://localhost:8080/learningProgress', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // add this line
         },
         body: JSON.stringify(data),
       });
@@ -154,8 +165,10 @@ function AddLearningProgress() {
         });
         setErrors({});
       } else {
-        const errorData = await response.json();
-        alert(errorData.message || 'Failed to add learning progress.');
+        //////
+        const errorText = await response.text(); // fallback to text
+        alert(errorText || 'Failed to add learning progress.');
+        
       }
     } catch (error) {
       console.error('Error:', error);
@@ -180,10 +193,12 @@ function AddLearningProgress() {
 
   return (
     <div className="add-learning-progress">
-      <Navbar/>
+      <LearningNavbar />
 
-      <div className='form-container'>
-        <div className='form-container__inner'>
+
+      <div className="page-container">
+        <div className="form-wrapper">
+
           <h2 className="form-title">
             {getTemplateIcon()}
             Add New Learning Progress

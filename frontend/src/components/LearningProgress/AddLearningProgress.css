@@ -263,3 +263,20 @@
     padding: 1.5rem;
   }
 }
+
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+}

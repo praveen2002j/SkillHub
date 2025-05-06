@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { FaBook, FaStar, FaFlagCheckered, FaLink, FaCalendarAlt, FaClock, FaUser, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import './MyLearningProgress.css';
-import Navbar from '../components/Navbar';
+import LearningNavbar from '../components/LearningNavbar';
+
+
+
 
 ChartJS.register(
   CategoryScale,
@@ -17,53 +21,95 @@ ChartJS.register(
 function MyLearningProgress() {
   const [learningProgress, setLearningProgress] = useState([]);
   const [userID, setUserID] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = localStorage.getItem('userId'); // ✅ Matches what's set during login
+    console.log("LocalStorage userID:", storedUserId);
+
     if (storedUserId) {
-      setUserID(storedUserId);
+      setUserID(storedUserId); // ✅ this is what sets the userID for use in fetch
     } else {
       console.error('No userId found in local storage');
     }
   }, []);
 
   useEffect(() => {
-    if (userID) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`http://localhost:8080/learningProgress?userID=${userID}`);
-          if (response.ok) {
-            const data = await response.json();
-            const filteredData = data.filter(item => item.userID === userID);
-            setLearningProgress(filteredData);
-          } else {
-            console.error('Failed to fetch learning progress data');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      };
-      fetchData();
-    }
-  }, [userID]);
+    const storedUserId = localStorage.getItem('userId');
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this learning progress?')) {
+    console.log("LocalStorage userID:", storedUserId);
+    setUserID(storedUserId);
+  
+    const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
-          method: 'DELETE'
+        const token = localStorage.getItem('psnToken');
+        if (!token) {
+          alert('You are not logged in. Please sign in.');
+          return;
+        }
+  
+        const response = await fetch('http://localhost:8080/learningProgress', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
+  
         if (response.ok) {
-          setLearningProgress(prev => prev.filter(progress => progress.id !== id));
-          alert('Learning progress deleted successfully!');
+          const data = await response.json();
+          console.log("Fetched data:", data);
+          data.forEach(item => {
+            console.log("Item userID from backend:", item.userID);
+            console.log("Compare with local userID:", storedUserId);
+          });
+          
+          const filteredData = data.filter(item => item.userID === storedUserId);
+          console.log("Filtered data:", filteredData);
+          setLearningProgress(filteredData);
         } else {
-          console.error('Failed to delete learning progress');
+          console.error('Failed to fetch learning progress data');
         }
       } catch (error) {
         console.error('Error:', error);
       }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this learning progress?')) {
+      try {
+        const token = localStorage.getItem('psnToken'); // ✅ Retrieve token
+  
+        if (!token) {
+          alert('You are not logged in. Please sign in.');
+          window.location.href = '/signin';
+          return;
+        }
+  
+        const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}` // ✅ Include token here
+          }
+        });
+  
+        if (response.ok) {
+          setLearningProgress(prev => prev.filter(progress => progress.id !== id));
+          alert('Learning progress deleted successfully!');
+        } else {
+          alert('Failed to delete learning progress.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while deleting learning progress.');
+      }
     }
   };
+  
 
   const getMonthlySkillCounts = () => {
     const completedTutorials = learningProgress.filter(
@@ -178,7 +224,8 @@ function MyLearningProgress() {
 
   return (
     <div className="my-learning-progress">
-     <Navbar/>
+     <LearningNavbar />
+
 
       <div className="progress-chart">
         <div className="progress-chart__container">
@@ -320,7 +367,8 @@ function MyLearningProgress() {
                   <div className="progress-card__actions">
                     <button 
                       className="progress-card__button progress-card__button--edit"
-                      onClick={() => window.location.href = `/updateLearningProgress/${item.id}`}
+                      onClick={() => navigate(`/updateLearningProgress/${item.id}`)}
+
                     >
                       <FaEdit /> Edit
                     </button>
@@ -341,9 +389,13 @@ function MyLearningProgress() {
                   ? 'No relevant learning progress found.'
                   : 'User ID not found in local storage.'}
               </p>
-              <a href="/addLearningProgress" className="progress-empty__link">
+              <button
+                onClick={() => navigate('/addLearningProgress')}
+                className="progress-empty__link"
+              >
                 <FaPlus /> Create a new learning progress
-              </a>
+              </button>
+
             </div>
           )}
         </div>

@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { FaBook, FaStar, FaFlagCheckered, FaLink, FaCalendarAlt, FaClock, FaUser } from 'react-icons/fa';
 import './Learn.css';
-import Navbar from '../components/Navbar';
+import LearningNavbar from '../components/LearningNavbar';
+
 
 function AllLearningProgress() {
   const [learningProgress, setLearningProgress] = useState([]);
 
+  ///////
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/learningProgress');
+        const response = await fetch('http://localhost:8080/learningProgress', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('psnToken')}`,
+            'Content-Type': 'application/json'
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setLearningProgress(data);
@@ -20,9 +28,10 @@ function AllLearningProgress() {
         console.error('Error:', error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   const getTemplateColor = (templateName) => {
     switch(templateName) {
@@ -52,7 +61,8 @@ function AllLearningProgress() {
 
   return (
     <div className="learning-progress">
-      <Navbar/>
+     <LearningNavbar />
+
       <div className='progress-container'>
         <div className='progress-container__inner'>
           {learningProgress.length > 0 ? (

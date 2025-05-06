@@ -221,3 +221,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+.progress-container {
+  margin-top: 70px; /* Increase this value if needed */
+  padding: 1rem;
+}

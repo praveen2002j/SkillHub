@@ -7,6 +7,9 @@ import { BiAddToQueue } from "react-icons/bi";
 import styles from "./styles/NewsFeed.module.css";
 import { RiDashboard2Fill } from "react-icons/ri";
 import { CastForEducationOutlined, TrackChanges } from "@mui/icons-material";
+import { FaBook } from "react-icons/fa"; // for All Learning Progress
+// or use FaEdit for Update Learning
+
 
 function NewsFeed() {
   let navigate = useNavigate();
@@ -45,6 +48,10 @@ function NewsFeed() {
             <IconButton color="inherit" component={Link} to="follower">
               <AiOutlineUserAdd />
             </IconButton>
+            <IconButton color="inherit" component={Link} to="/allLearningProgress" title="All Learning Progress">
+              <FaBook />
+            </IconButton>
+
             <IconButton color="inherit" component={Link} to="allaccounts">
               <AiOutlineSearch />
             </IconButton>

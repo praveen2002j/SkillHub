@@ -42,7 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors(); // ✅ ADDED: Enable CORS support
         http.csrf().disable().authorizeRequests().antMatchers("/api/v1/users/save", "/api/v1/users/signin","/api/v1/users/update","/users/delete").permitAll()
+                .antMatchers("/learningProgress/**").hasAuthority("user") // ✅ Allow authenticated access
                 .antMatchers("/api/v1/getdata").hasAuthority("user")
                 .anyRequest().authenticated().and().exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
@@ -50,5 +52,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(secFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    
+
+    /// //
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(java.util.Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }

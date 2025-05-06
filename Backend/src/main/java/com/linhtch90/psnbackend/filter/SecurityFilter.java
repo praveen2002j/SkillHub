@@ -6,6 +6,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
+
 
 import com.linhtch90.psnbackend.service.JWTUtil;
 
@@ -27,10 +29,30 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+// ✅ Normalize token to remove "Bearer " before the second block
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String finalToken = bearerToken.substring(7); // clean token
+            request = new HttpServletRequestWrapper(request) {
+                @Override
+                public String getHeader(String name) {
+                    if ("Authorization".equalsIgnoreCase(name)) {
+                        return finalToken;
+                    }
+                    return super.getHeader(name);
+                }
+            };
+        }
+
+
+
+
+
         // read token from authorization header
-        String token = request.getHeader("Authorization");
+       String token = request.getHeader("Authorization");
         if (token != null) {
-            String userEmail = util.getSubject(token);
+           String userEmail = util.getSubject(token);
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails user = userDetailsService.loadUserByUsername(userEmail);
                 boolean isValid = util.isValidToken(token, user.getUsername());
@@ -40,7 +62,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        }
+       }
         filterChain.doFilter(request, response);
         
     }
