@@ -17,6 +17,12 @@ import SkilllinkLanding from './SkilllinkLanding';
 import ProgressTracker from '../components/Progress/ProgressTracker';
 import ProgressDashboard from '../components/Progress/ProgressDashboard';
 import EducationalContentPage from './EducationalContent/EducationalContentPage';
+import Profile from './UserProfile/ProfileView';
+import ProfileEdit from './UserProfile/ProfileEdit';
+import CertificationForm from './UserProfile/CertificationForm';
+import ExperienceForm from './UserProfile/ExperienceForm';
+import LearningGoals from './UserProfile/LearningGoalForm';
+import SkillForm from './UserProfile/SkillForm';
 
 const userId = localStorage.getItem('psnUserId');
 
@@ -33,8 +39,14 @@ function AppContainer() {
           <Route path="" element={<NewsFeedContent />} />
           <Route path="following" element={<FollowingList />} />
           <Route path="follower" element={<FollowerList />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="myprofile" element={<MyProfile />} />
+          {/*<Route path="profile" element={<Profile />} />
+          <Route path="myprofile" element={<MyProfile />} />*/}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/skills" element={<SkillForm />} />
+          <Route path="/certifications" element={<CertificationForm />} />
+          <Route path="/experiences" element={<ExperienceForm />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/learning-goals" element={<LearningGoals />} />
           <Route path="allaccounts" element={<AllAccounts />} />
           <Route
             path="progress"
