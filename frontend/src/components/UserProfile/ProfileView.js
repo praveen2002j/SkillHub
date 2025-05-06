@@ -51,7 +51,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/system';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#246bff'];
 
 const ProfileView = () => {
   const [profile, setProfile] = useState(null);
@@ -161,7 +161,7 @@ const ProfileView = () => {
 
   const ProfileHeader = styled(Box)(({ theme }) => ({
     position: 'relative',
-    backgroundColor: '#f3f6f8',
+    backgroundColor: '#2877ff',
     paddingBottom: theme.spacing(8),
     marginBottom: theme.spacing(6),
     '&::after': {
@@ -227,7 +227,7 @@ const ProfileView = () => {
       {/* Profile Header Section */}
       <Navbar/>
       <ProfileHeader>
-        <Box sx={{ height: '200px', backgroundColor: '#f3f6f8' }}></Box>
+        <Box sx={{ height: '200px', backgroundColor: '#2877ff' }}></Box>
         
         <ProfileContent>
           <Grid container spacing={3}>
@@ -282,7 +282,13 @@ const ProfileView = () => {
                   mb: 2,
                   borderRadius: '20px',
                   textTransform: 'none',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  color: '#fff',
+                  borderColor: '#fff',
+                  '&:hover': {
+                    borderColor: '#fff',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                  },
                 }}
               >
                 Edit profile
