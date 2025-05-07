@@ -29,7 +29,6 @@ public class LearningProgressModel {
     //Milestone Achieved
     private String milestoneName;
     private String dateAchieved;
-    private String proof;
     private String proofUrl;
     private String milestoneProgress;
     private String notes;
@@ -59,7 +58,7 @@ public class LearningProgressModel {
         this.confidenceLevel = confidenceLevel;
         this.milestoneName = milestoneName;
         this.dateAchieved = dateAchieved;
-        this.proof = proof;
+        this.proofUrl = proofUrl;
         this.milestoneProgress = milestoneProgress;
         this.notes = notes;
     }
@@ -224,12 +223,14 @@ public class LearningProgressModel {
         this.dateAchieved = dateAchieved;
     }
 
-    public String getProof() {
-        return proof;
+    
+
+    public String getProofUrl() {
+        return proofUrl;
     }
 
-    public void setProof(String proof) {
-        this.proof = proof;
+    public void setProofUrl(String proofUrl) {
+        this.proofUrl = proofUrl;
     }
 
     public String getMilestoneProgress() {

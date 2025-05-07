@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 
-
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -22,9 +23,30 @@ public class LearningProgressController {
     @Autowired
     private LearningProgressRepository repository;
 
-    @PostMapping
-    public LearningProgressModel createLearningProgress(@RequestBody LearningProgressModel model) {
-        // Only required fields are handled; others can be null
+
+    @PostMapping(
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public LearningProgressModel createLearningProgress(
+            @ModelAttribute LearningProgressModel model,
+            @RequestPart(value = "proofFile", required = false) MultipartFile proofFile
+    )
+
+    {
+        // 1) Save the image
+        if (proofFile != null && !proofFile.isEmpty()) {
+            String filename = java.util.UUID.randomUUID() + "_" + proofFile.getOriginalFilename();
+            java.nio.file.Path target = java.nio.file.Paths.get("uploads").resolve(filename);
+            try {
+                proofFile.transferTo(target);
+                model.setProofUrl("/uploads/" + filename);
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Could not save image", e);
+            }
+        }
+        // 2) Persist the rest of the fields
         return repository.save(model);
     }
 
@@ -71,7 +93,7 @@ public class LearningProgressController {
                     existingModel.setConfidenceLevel(updatedModel.getConfidenceLevel());
                     existingModel.setMilestoneName(updatedModel.getMilestoneName());
                     existingModel.setDateAchieved(updatedModel.getDateAchieved());
-                    existingModel.setProof(updatedModel.getProof());
+                    existingModel.setProofUrl(updatedModel.getProofUrl());
                     existingModel.setMilestoneProgress(updatedModel.getMilestoneProgress());
                     existingModel.setNotes(updatedModel.getNotes());
                     return repository.save(existingModel);
