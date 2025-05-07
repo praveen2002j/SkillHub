@@ -196,10 +196,23 @@ function AllLearningProgress() {
                         <span className="field-label">Date Achieved:</span>{' '}
                         <span className="field-value">{item.dateAchieved}</span>
                       </div>
-                      <div className="progress-card__detail-item">
-                        <span className="field-label">Proof:</span>{' '}
-                        <span className="field-value">{item.proof}</span>
-                      </div>
+                      <figure className="progress-card__proof-figure">
+                        <figcaption className="progress-card__proof-label">Proof:</figcaption>
+                        {item.proofUrl
+                          ? (
+                            <img
+                              src={
+                                item.proofUrl.startsWith('http')
+                                  ? item.proofUrl
+                                  : `http://localhost:8080${item.proofUrl}`
+                              }
+                              alt="Milestone proof"
+                              className="progress-card__proof-image"
+                            />
+                          )
+                          : <span className="progress-card__proof-missing">No proof provided</span>
+                        }
+                      </figure>
                       <div className="progress-card__progress-bar">
                         <div
                           className="progress-card__progress-fill"

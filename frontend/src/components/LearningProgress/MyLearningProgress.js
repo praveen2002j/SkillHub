@@ -298,8 +298,8 @@ function MyLearningProgress() {
 
                   {/* Milestone Achieved */}
                   {item.templateName==='Milestone Achieved' && (
-                    <div className="progress-card__details">
-                      <div className="progress-card__detail-item">
+                     <div className="progress-card__details progress-card__details--scroll">
+                      <div className="progress-card__detail-item" >
                         <span className="detail-label">Milestone:</span>
                         <span className="detail-value">{item.milestoneName}</span>
                       </div>
@@ -308,10 +308,25 @@ function MyLearningProgress() {
                         <span className="detail-label">Achieved:</span>
                         <span className="detail-value">{item.dateAchieved}</span>
                       </div>
-                      <div className="progress-card__detail-item">
-                        <span className="detail-label">Proof:</span>
-                        <span className="detail-value">{item.proof}</span>
-                      </div>
+                      <figure className="progress-card__proof-figure">
+                        <figcaption className="progress-card__proof-label">Proof:</figcaption>
+                        {item.proofUrl
+                          ? (
+                            <img
+                              src={
+                                item.proofUrl.startsWith('http')
+                                  ? item.proofUrl
+                                  : `http://localhost:8080${item.proofUrl}`
+                              }
+                              alt="Milestone proof"
+                              className="progress-card__proof-image"
+                            />
+                          )
+                          : <span className="progress-card__proof-missing">No proof provided</span>
+                        }
+                      </figure>
+
+
                       <div className="progress-card__progress-bar">
                         <div
                           className="progress-card__progress-fill"
@@ -323,7 +338,7 @@ function MyLearningProgress() {
                           {item.milestoneProgress}%
                         </div>
                       </div>
-                      <div className="progress-card__detail-item">
+                      <div className="progress-card__detail-item" >
                         <span className="detail-label">Notes:</span>
                         <span className="detail-value">{item.notes}</span>
                       </div>

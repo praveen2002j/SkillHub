@@ -26,7 +26,7 @@ function AddLearningProgress() {
     // Milestone Achieved
     milestoneName: '',
     dateAchieved: '',
-    proof: '',
+    proof: null,
     milestoneProgress: '',
     notes: '',
   });
@@ -102,7 +102,7 @@ function AddLearningProgress() {
     if (formData.templateName === 'Milestone Achieved') {
       if (!formData.milestoneName.trim()) newErrors.milestoneName = 'Milestone name is required';
       if (!formData.dateAchieved) newErrors.dateAchieved = 'Date achieved is required';
-      if (!formData.proof.trim()) newErrors.proof = 'Proof is required';
+      if (!formData.proof)                  newErrors.proof = 'Proof image is required';
       if (!formData.milestoneProgress || isNaN(formData.milestoneProgress)) {
         newErrors.milestoneProgress = 'Please enter a valid number (0-100)';
       } else if (formData.milestoneProgress < 0 || formData.milestoneProgress > 100) {
@@ -117,83 +117,76 @@ function AddLearningProgress() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
+  
+    if (!validateForm()) return;
     setIsSubmitting(true);
-    
-    // Retrieve userID and fullName from local storage
+  
+    // pull user info
     const userID = localStorage.getItem('userId');
     const fullName = localStorage.getItem('fullName');
-
     if (!userID || !fullName) {
       alert('Please log in to submit your learning progress.');
-      window.location.href = '/';
-      return;
+      return window.location.href = '/';
     }
-    //////
-    const data = { ...formData, userID, fullName }; // ✅ This is key!
+  
+      // build a FormData and include the logged-in user info
+  const payload = new FormData();
+  payload.append('userID', userID);
+  payload.append('fullName', fullName);
 
+  // now append all other fields (skipping the file for now)
+  Object.entries(formData).forEach(([key, val]) => {
+    if (key === 'proof') return;
+    payload.append(key, val);
+  });
+
+  // finally append the proof image
+  if (formData.proof instanceof File) {
+     payload.append('proofFile', formData.proof);   
+  }
+
+  
     try {
-      const token = localStorage.getItem('psnToken'); // get token from localStorage
-      /////
+      const token = localStorage.getItem('psnToken');
       if (!token) {
         alert('You are not logged in. Please sign in.');
-        window.location.href = '/signin'; // optional redirect
-        return;
+        return window.location.href = '/signin';
       }
-      
-
-      const response = await fetch('http://localhost:8080/learningProgress', {
+  
+      const res = await fetch('http://localhost:8080/learningProgress', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // add this line
+          Authorization: `Bearer ${token}`     // <–– notice: no Content-Type header
         },
-        body: JSON.stringify(data),
+        body: payload
       });
-
-      if (response.ok) {
-        alert('Learning progress added successfully!');
-        // Reset form
-        setFormData({
-          title: '',
-          description: '',
-          templateName: '',
-          learningSkills: '',
-          date: '',
-          tutorialName: '',
-          duration: '',
-          completedProgress: '',
-          keyTakeaways: '',
-          tutorialLink: '',
-          skillName: '',
-          proficiencyLevel: '',
-          practiceTime: '',
-          newProgress: '',
-          confidenceLevel: '',
-          milestoneName: '',
-          dateAchieved: '',
-          proof: '',
-          milestoneProgress: '',
-          notes: '',
-        });
-        setErrors({});
-      } else {
-        //////
-        const errorText = await response.text(); // fallback to text
-        alert(errorText || 'Failed to add learning progress.');
-        
+  
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Upload failed');
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while adding learning progress.');
+  
+      alert('Learning progress added successfully!');
+      // reset form
+      setFormData({
+        title: '', description: '', templateName: '',
+        learningSkills: '', date: '', tutorialName: '', duration: '',
+        completedProgress: '', keyTakeaways: '', tutorialLink: '',
+        skillName: '', proficiencyLevel: '', practiceTime: '',
+        newProgress: '', confidenceLevel: '',
+        milestoneName: '', dateAchieved: '', proof: null,
+        milestoneProgress: '', notes: ''
+      });
+      setErrors({});
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'An error occurred while adding learning progress.');
     } finally {
       setIsSubmitting(false);
     }
   };
+  
+  
 
   const getTemplateIcon = () => {
     switch(formData.templateName) {
@@ -514,17 +507,21 @@ function AddLearningProgress() {
                 </div>
                 
                 <div className={`form-group ${errors.proof ? 'has-error' : ''}`}>
-                  <label className="form-label">Proof*</label>
-                  <input 
-                    type='text' 
-                    name='proof' 
-                    value={formData.proof} 
-                    onChange={handleChange}
+                  <label className="form-label">Proof (image upload)*</label>
+                  <input
+                    type="file"
+                    name="proofFile"
+                    accept="image/*"
+                    onChange={e => {
+                      const file = e.target.files[0];
+                      setFormData({ ...formData, proof: file });
+                      if (errors.proof) setErrors({ ...errors, proof: '' });
+                    }}
                     className="form-input"
-                    placeholder="Evidence of your achievement"
                   />
                   {errors.proof && <span className="error-message">{errors.proof}</span>}
                 </div>
+
                 
                 <div className={`form-group ${errors.notes ? 'has-error' : ''}`}>
                   <label className="form-label">Notes*</label>

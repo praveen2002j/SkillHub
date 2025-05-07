@@ -30,7 +30,7 @@ function UpdateLearningProgress() {
     // Milestone Achieved
     milestoneName: '',
     dateAchieved: '',
-    proof: '',
+    proofUrl: '',
     milestoneProgress: '',
     notes: '',
   });
@@ -114,7 +114,7 @@ function UpdateLearningProgress() {
     if (formData.templateName === 'Milestone Achieved') {
       if (!formData.milestoneName.trim()) newErrors.milestoneName = 'Milestone name is required';
       if (!formData.dateAchieved) newErrors.dateAchieved = 'Date achieved is required';
-      if (!formData.proof.trim()) newErrors.proof = 'Proof is required';
+      if (!formData.proofUrl.trim()) newErrors.proofUrl = 'Proof URL is required';
       if (!formData.milestoneProgress || isNaN(formData.milestoneProgress)) {
         newErrors.milestoneProgress = 'Please enter a valid number (0-100)';
       } else if (formData.milestoneProgress < 0 || formData.milestoneProgress > 100) {
@@ -462,7 +462,7 @@ function UpdateLearningProgress() {
                     <input 
                       type='date' 
                       name='dateAchieved' 
-                      value={formData.dateAchieved} 
+                      value={formData.dateAchieved ?? ''}
                       onChange={handleChange}
                       className="form-input"
                       max={today} // Restrict to today and previous dates
@@ -475,7 +475,7 @@ function UpdateLearningProgress() {
                     <input 
                       type='number' 
                       name='milestoneProgress' 
-                      value={formData.milestoneProgress} 
+                      value={formData.milestoneProgress ?? ''}
                       onChange={handleChange}
                       className="form-input"
                       placeholder="0-100"
@@ -487,14 +487,13 @@ function UpdateLearningProgress() {
                 </div>
                 
                 <div className={`form-group ${errors.proof ? 'has-error' : ''}`}>
-                  <label className="form-label">Proof*</label>
+                <label className="form-label">Proof URL*</label>
                   <input 
                     type='text' 
-                    name='proof' 
-                    value={formData.proof} 
+                    name='proofUrl' 
+                    value={formData.proofUrl ?? ''}
                     onChange={handleChange}
-                    className="form-input"
-                    placeholder="Evidence of your achievement"
+                    placeholder="e.g. /uploads/your-image.png"
                   />
                   {errors.proof && <span className="error-message">{errors.proof}</span>}
                 </div>
