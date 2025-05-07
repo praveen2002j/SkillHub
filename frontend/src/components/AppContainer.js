@@ -17,6 +17,10 @@ import SkilllinkLanding from './SkilllinkLanding';
 import ProgressTracker from '../components/Progress/ProgressTracker';
 import ProgressDashboard from '../components/Progress/ProgressDashboard';
 import EducationalContentPage from './EducationalContent/EducationalContentPage';
+import AllLearningProgress from '../components/LearningProgress/AllLearningProgress';
+import AddLearningProgress from '../components/LearningProgress/AddLearningProgress';
+import UpdateLearningProgress from '../components/LearningProgress/UpdateLearningProgress';
+import MyLearningProgress from '../components/LearningProgress/MyLearningProgress';
 
 const userId = localStorage.getItem('psnUserId');
 
@@ -48,6 +52,10 @@ function AppContainer() {
         </Route>
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/allLearningProgress" element={<AllLearningProgress />} />
+        <Route path="/addLearningProgress" element={<AddLearningProgress />} />
+        <Route path="/updateLearningProgress/:id" element={<UpdateLearningProgress />} />
+        <Route path="/myLearningProgress" element={<MyLearningProgress />} />
       </Routes>
     </HashRouter>
   );
