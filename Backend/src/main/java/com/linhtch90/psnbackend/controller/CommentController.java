@@ -4,6 +4,9 @@ import com.linhtch90.psnbackend.entity.CommentEntity;
 import com.linhtch90.psnbackend.entity.CommentPostRequestEntity;
 import com.linhtch90.psnbackend.entity.IdObjectEntity;
 import com.linhtch90.psnbackend.entity.PostEntity;
+import com.linhtch90.psnbackend.repository.CommentRepository;
+import com.linhtch90.psnbackend.repository.NotificationRepository;
+import com.linhtch90.psnbackend.repository.PostRepository;
 import com.linhtch90.psnbackend.service.CommentService;
 import com.linhtch90.psnbackend.service.ResponseObjectService;
 
@@ -12,9 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class CommentController {
+    private  NotificationRepository notificationRepository;
+    private  PostRepository postRepository;
+    private  CommentRepository commentRepository;
+
     @Autowired
     private CommentService commentService;
     @PostMapping("/insertcomment")
