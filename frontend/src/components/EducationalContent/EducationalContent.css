@@ -159,26 +159,26 @@
 .tab-btn {
   padding: 12px 20px;
   margin-right: 8px;
-  background-color: transparent;
+  background-color: #eeedf4;
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
   font-size: 16px;
-  color: #ffffff;
+  color: #5b30f6;
   transition: all 0.3s ease;
   font-weight: 500;
   position: relative;
 }
 
 .tab-btn:hover {
-  color: #3b82f6;
+  color: #3bf3f6;
   background-color: rgba(217, 119, 6, 0.05);
 }
 
 .tab-btn.active {
-  color: #2563eb;
+  color: #ffffff;
   border-bottom-color: #2563eb;
-  background-color: rgba(217, 119, 6, 0.1);
+  background-color: rgba(19, 12, 3, 0.1);
 }
 
 /* Content feed styles with theme colors */
