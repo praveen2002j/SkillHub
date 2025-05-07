@@ -308,7 +308,8 @@
   
   .progress-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     grid-auto-rows: 1fr;                 /* ← force every row to take equal space */
     gap: 1.5rem;
      /* every implicit row will be *at least* 450px tall */
