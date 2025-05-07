@@ -124,6 +124,8 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: #2c3e50;
+  margin-top: 0.5cap;
+  margin-bottom: 1.5cap;
 }
 
 .progress-card__meta {
