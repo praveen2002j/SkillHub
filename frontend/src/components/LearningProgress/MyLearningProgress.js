@@ -331,8 +331,8 @@ function MyLearningProgress() {
                         <div
                           className="progress-card__progress-fill"
                           style={{
-                            width:`${item.milestoneProgress}%`,
-                            backgroundColor: '#2ecc71'    // always green
+                            width: `${item.milestoneProgress}%`,
+                            backgroundColor: '#2ecc71'
                           }}
                         >
                           {item.milestoneProgress}%
