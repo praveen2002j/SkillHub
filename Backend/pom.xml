@@ -84,6 +84,14 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                         
+                      <!-- ← HERE →
+                      Instruct Maven to fork javac and open the internal package -->
+                      <fork>true</fork>
+                      <compilerArgs>
+                        <arg>--add-opens=java.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                      </compilerArgs>
+                      <!-- ← END ADDITION → -->
                 </configuration>
             </plugin>
 
