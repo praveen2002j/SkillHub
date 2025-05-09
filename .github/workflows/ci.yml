@@ -19,5 +19,5 @@ jobs:
       - name: Compile frontend
         working-directory: frontend
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
