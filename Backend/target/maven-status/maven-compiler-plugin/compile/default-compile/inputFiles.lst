@@ -24,9 +24,11 @@ D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\config\AppCo
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\entity\CommentPostRequestEntity.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\entity\EducationalContentEntity.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\entity\PostEntity.java
+D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\repository\NotificationRepository.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\controller\UserController.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\entity\ProgressEntity.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\PsnBackendApplication.java
+D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\entity\NotificationEntity.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\filter\SecurityFilter.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\config\SecurityConfig.java
 D:\SkillHub\SkillHub\Backend\src\main\java\com\linhtch90\psnbackend\service\JWTUtil.java
