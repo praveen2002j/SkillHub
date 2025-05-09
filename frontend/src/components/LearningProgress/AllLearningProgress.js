@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaBook,
   FaStar,
@@ -21,9 +22,13 @@ const getProgressColor = val => {
 
 
 function AllLearningProgress() {
-  const [learningProgress, setLearningProgress] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState('');  // 
+ 
   
+  const [learningProgress, setLearningProgress] = useState([]);
+  // read + write ?template=… in the URL
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialFilter = searchParams.get('template') || '';
+  const [selectedTemplate, setSelectedTemplate] = useState(initialFilter);
 
   useEffect(() => {
     (async () => {
@@ -84,7 +89,14 @@ function AllLearningProgress() {
         <select
           id="templateFilter"
           value={selectedTemplate}
-          onChange={e => setSelectedTemplate(e.target.value)}
+          onChange={e => {
+                 const v = e.target.value;
+                 setSelectedTemplate(v);
+                 // add or remove the ?template= param
+                 if (v)      searchParams.set('template', v);
+                 else         searchParams.delete('template');
+                 setSearchParams(searchParams, { replace: true });
+               }}
         >
           <option value="">All</option>
           <option value="Completed Tutorials">Completed Tutorials</option>

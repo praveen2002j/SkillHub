@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { FaBook, FaStar, FaFlagCheckered, FaArrowLeft } from 'react-icons/fa';
 import LearningNavbar from '../components/LearningNavbar';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 
 function UpdateLearningProgress() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+    // ─── read current template filter suffix ─────────────────────
+  const [searchParams] = useSearchParams();
+  const filter = searchParams.get('template') || '';
+  const qs     = filter ? `?template=${encodeURIComponent(filter)}` : '';
 
   const [formData, setFormData] = useState({
     title: '',
@@ -165,7 +170,7 @@ function UpdateLearningProgress() {
   
       if (response.ok) {
         alert('Learning progress updated successfully!');
-        navigate('/myLearningProgress'); // ✅ This redirects without page reload
+        navigate(`/myLearningProgress${qs}`); // ✅ This redirects without page reload
       } else {
         alert('Failed to update learning progress.');
       }
