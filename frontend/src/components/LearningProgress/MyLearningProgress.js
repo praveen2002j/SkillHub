@@ -124,30 +124,56 @@ function MyLearningProgress() {
   };
 
   const getMonthlySkillCounts = () => {
-    const completed = learningProgress.filter(i => i.templateName === 'Completed Tutorials');
-    const counts = completed.reduce((acc, item) => {
-      if (!item.date) return acc;
-      const d = new Date(item.date);
-      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      const name = d.toLocaleString('default', { month:'short', year:'numeric' });
-      if (!acc[key]) acc[key] = { monthName: name, count: 0 };
-      acc[key].count++;
-      return acc;
-    }, {});
-    return Object.values(counts).sort((a,b)=> a.monthName.localeCompare(b.monthName));
+    const counts = {};
+  
+    // 1) count Completed Tutorials
+    learningProgress
+      .filter(i => i.templateName === 'Completed Tutorials' && i.date)
+      .forEach(item => {
+        const d   = new Date(item.date);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        const name = d.toLocaleString('default', { month:'short', year:'numeric' });
+        if (!counts[key]) counts[key] = { monthName: name, completed: 0, milestone: 0 };
+        counts[key].completed++;
+      });
+  
+    // 2) count Milestone Achieved
+    learningProgress
+      .filter(i => i.templateName === 'Milestone Achieved' && i.dateAchieved)
+      .forEach(item => {
+        const d   = new Date(item.dateAchieved);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        const name = d.toLocaleString('default', { month:'short', year:'numeric' });
+        if (!counts[key]) counts[key] = { monthName: name, completed: 0, milestone: 0 };
+        counts[key].milestone++;
+      });
+  
+    return Object.values(counts)
+      .sort((a, b) => a.monthName.localeCompare(b.monthName));
   };
+  
+const monthlyData = getMonthlySkillCounts();
 
-  const monthlyData = getMonthlySkillCounts();
-  const chartData = {
-    labels: monthlyData.map(i => i.monthName),
-    datasets: [{
-      label: 'Skills Completed',
-      data: monthlyData.map(i => i.count),
+const chartData = {
+  labels: monthlyData.map(i => i.monthName),
+  datasets: [
+    {
+      label: 'Completed Tutorials',
+      data: monthlyData.map(i => i.completed),
       backgroundColor: 'rgba(62,169,159,0.6)',
-      borderColor: 'rgba(62,169,159,1)',
+      borderColor:     'rgba(62,169,159,1)',
       borderWidth: 1
-    }]
-  };
+    },
+    {
+      label: 'Milestones Achieved',
+      data: monthlyData.map(i => i.milestone),
+      backgroundColor: '#ff7b54',
+      borderColor:     'rgba(243,156,18,1)',
+      borderWidth: 1
+    }
+  ]
+};
+
   const chartOptions = {
     responsive: true,
     plugins: {
