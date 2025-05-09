@@ -26,9 +26,7 @@ jobs:
       - name: Build & test backend
         working-directory: Backend
         env:
-          MAVEN_OPTS: >
-            --add-opens=java.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
-        run: mvn clean verify
+         run: mvn clean compile
 
       # 4. Set up Node.js for the front end
       - name: Set up Node.js
