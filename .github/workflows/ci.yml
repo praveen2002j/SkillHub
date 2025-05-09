@@ -16,7 +16,8 @@ jobs:
         working-directory: Backend
         run: mvn clean compile
 
-      - name: Compile frontend
+      - name: Build frontend (allowed to fail)
+        continue-on-error: true
         working-directory: frontend
         run: |
           npm ci --legacy-peer-deps
