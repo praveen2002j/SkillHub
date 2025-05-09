@@ -123,7 +123,20 @@ function AllLearningProgress() {
                   <div className="progress-card__meta">
                     <span className="progress-card__meta-item">
                       <FaUser className="progress-card__meta-icon"/>
-                      <span className="field-value">{item.fullName}</span>
+                      <span className="field-value">
+                        {(() => {
+                          const parts = item.fullName.split(' ');
+                          if (parts.length === 1) return parts[0];           // single-word names
+                          const [first, ...rest] = parts;                  
+                          return (
+                            <>
+                              {first}<br/>
+                              {rest.join(' ')}
+                            </>
+                          );
+                        })()}
+                      </span>
+
                     </span>
                     <span className="progress-card__meta-item">
                       <span

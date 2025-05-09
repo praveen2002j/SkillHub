@@ -151,31 +151,38 @@
 
 .progress-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;   /* pin icon + title to the first‐line baseline */
   gap: 0.75rem;
-  margin-bottom: 1rem;
 }
-
-.progress-card__icon {
+.progress-card__icon,
+.progress-card__meta-icon {
+  width: 1.25rem;
+  height: 1.25rem;
   font-size: 1.25rem;
-  color: #3ea99f;
+  line-height: 1.25rem;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* nudge down by ~0.15em so it sits exactly with your title’s first line */
+  margin-top: 0.15em;
 }
 
+/* Tighter title spacing so baseline lines up perfectly */
 .progress-card__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-top: 0.5cap;
-  margin-bottom: 1.5cap;
+  margin: 0 0 0.5rem;  /* only bottom margin */
+  line-height: 1.2;    /* ensures your baseline is consistent */
 }
 
 .progress-card__meta {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;    /* ← now badges sit at the top of the name block */
   margin-bottom: 1rem;
   font-size: 0.85rem;
   color: #7f8c8d;
+  
 }
 
 .progress-card__meta-item {
@@ -186,15 +193,22 @@
 
 .progress-card__meta-icon {
   color: #3ea99f;
+
 }
 
 .progress-card__template {
-  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;      
+  height: 40px;   
   border-radius: 4px;
   color: white;
   font-size: 0.75rem;
   font-weight: 500;
+  white-space: nowrap;
 }
+
 
 .progress-card__description {
   color: #34495e;
@@ -446,5 +460,25 @@
 .progress-filter select:focus {
   outline: none;
   border-color: #3ea99f;
+}
+
+/* ─── Force two‐line names in the meta block ───────────────────────────────── */
+.progress-card__meta-item .field-value {
+  white-space: normal;       /* allow wrapping */
+  overflow-wrap: anywhere;   /* break long words if needed */
+  max-width: 120px;          /* adjust so “FirstName LastName” wraps after first name */
+}
+
+.progress-card__header .progress-card__icon,
+.progress-card__meta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+  flex: 0 0 auto;      /* never resize */
 }
 

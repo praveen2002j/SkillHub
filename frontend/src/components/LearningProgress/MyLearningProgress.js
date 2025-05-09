@@ -234,7 +234,19 @@ function MyLearningProgress() {
                   <div className="progress-card__meta">
                     <span className="progress-card__meta-item">
                       <FaUser className="progress-card__meta-icon"/>
-                      {item.fullName}
+                          <span className="field-value">
+                            {(() => {
+                              const parts = item.fullName.split(' ');
+                              if (parts.length === 1) return parts[0];
+                              const [first, ...rest] = parts;
+                              return (
+                                <>
+                                  {first}<br/>
+                                  {rest.join(' ')}
+                                </>
+                              );
+                            })()}
+                          </span>
                     </span>
                     <span className="progress-card__meta-item">
                       <span
