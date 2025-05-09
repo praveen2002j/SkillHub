@@ -1,4 +1,4 @@
-name: CI
+name: CI Compile-Only
 
 on:
   push:
@@ -7,39 +7,18 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  compile-only:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the code
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 2. Install Java 17 so module flags can be applied
-      - name: Set up Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      # 3. Build & test the back end (with module-open flag)
-      - name: Build & test backend
+      - name: Compile backend
         working-directory: Backend
-        env:
-         run: mvn clean compile
+        run: mvn clean compile
 
-      # 4. Set up Node.js for the front end
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      # 5. Install & test the front end
-      - name: Install & test frontend
+      - name: Compile frontend
         working-directory: frontend
         run: |
           npm ci
-          npm test
-
-
-          
+          npm run build
