@@ -1,5 +1,5 @@
 // src/MyLearningProgress.js
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -45,6 +45,15 @@ ChartJS.register(
 
 function MyLearningProgress() {
   const [learningProgress, setLearningProgress] = useState([]);
+ 
+    // read initial filter from ?template=…
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialFilter = searchParams.get('template') || '';
+  const [selectedTemplate, setSelectedTemplate] = useState(initialFilter);
+    // ─── build query-suffix for filter persistence ───────────────────
+  const filter = searchParams.get('template') || '';
+  const qs     = filter ? `?template=${encodeURIComponent(filter)}` : '';
+
   const [userID, setUserID] = useState(null);
   const navigate = useNavigate();
 
@@ -115,30 +124,56 @@ function MyLearningProgress() {
   };
 
   const getMonthlySkillCounts = () => {
-    const completed = learningProgress.filter(i => i.templateName === 'Completed Tutorials');
-    const counts = completed.reduce((acc, item) => {
-      if (!item.date) return acc;
-      const d = new Date(item.date);
-      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      const name = d.toLocaleString('default', { month:'short', year:'numeric' });
-      if (!acc[key]) acc[key] = { monthName: name, count: 0 };
-      acc[key].count++;
-      return acc;
-    }, {});
-    return Object.values(counts).sort((a,b)=> a.monthName.localeCompare(b.monthName));
+    const counts = {};
+  
+    // 1) count Completed Tutorials
+    learningProgress
+      .filter(i => i.templateName === 'Completed Tutorials' && i.date)
+      .forEach(item => {
+        const d   = new Date(item.date);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        const name = d.toLocaleString('default', { month:'short', year:'numeric' });
+        if (!counts[key]) counts[key] = { monthName: name, completed: 0, milestone: 0 };
+        counts[key].completed++;
+      });
+  
+    // 2) count Milestone Achieved
+    learningProgress
+      .filter(i => i.templateName === 'Milestone Achieved' && i.dateAchieved)
+      .forEach(item => {
+        const d   = new Date(item.dateAchieved);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        const name = d.toLocaleString('default', { month:'short', year:'numeric' });
+        if (!counts[key]) counts[key] = { monthName: name, completed: 0, milestone: 0 };
+        counts[key].milestone++;
+      });
+  
+    return Object.values(counts)
+      .sort((a, b) => a.monthName.localeCompare(b.monthName));
   };
+  
+const monthlyData = getMonthlySkillCounts();
 
-  const monthlyData = getMonthlySkillCounts();
-  const chartData = {
-    labels: monthlyData.map(i => i.monthName),
-    datasets: [{
-      label: 'Skills Completed',
-      data: monthlyData.map(i => i.count),
+const chartData = {
+  labels: monthlyData.map(i => i.monthName),
+  datasets: [
+    {
+      label: 'Completed Tutorials',
+      data: monthlyData.map(i => i.completed),
       backgroundColor: 'rgba(62,169,159,0.6)',
-      borderColor: 'rgba(62,169,159,1)',
+      borderColor:     'rgba(62,169,159,1)',
       borderWidth: 1
-    }]
-  };
+    },
+    {
+      label: 'Milestones Achieved',
+      data: monthlyData.map(i => i.milestone),
+      backgroundColor: '#ff7b54',
+      borderColor:     'rgba(243,156,18,1)',
+      borderWidth: 1
+    }
+  ]
+};
+
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -169,6 +204,12 @@ function MyLearningProgress() {
     return <FaBook className="progress-card__icon"/>;
   };
 
+
+  // filter before render
+  const visibleCards = selectedTemplate
+  ? learningProgress.filter(p => p.templateName === selectedTemplate)
+  : learningProgress;
+
   return (
     <div className="my-learning-progress">
       <LearningNavbar/>
@@ -179,11 +220,34 @@ function MyLearningProgress() {
         </div>
       </div>
 
+
+      <div className="progress-filter">
+        <label htmlFor="templateFilter">Show:</label>
+        <select
+          id="templateFilter"
+          value={selectedTemplate}
+          onChange={e => {
+            const v = e.target.value;
+            setSelectedTemplate(v);
+            // update URL: add or remove the ?template= param
+            if (v) searchParams.set('template', v);
+            else    searchParams.delete('template');
+            setSearchParams(searchParams, { replace: true });
+          }}
+        >
+          <option value="">All</option>
+          <option value="Completed Tutorials">Completed Tutorials</option>
+          <option value="New Skill Learned">New Skill Learned</option>
+          <option value="Milestone Achieved">Milestone Achieved</option>
+        </select>
+      </div>
+
+
       <div className='progress-container'>
         <div className='progress-container__inner'>
-          {learningProgress.length > 0 ? (
+          {visibleCards.length > 0 ? (
             <div className="progress-grid">
-              {learningProgress.map(item => (
+               {visibleCards.map(item => (
                 <div
                   key={item.id}
                   className="progress-card"
@@ -196,7 +260,19 @@ function MyLearningProgress() {
                   <div className="progress-card__meta">
                     <span className="progress-card__meta-item">
                       <FaUser className="progress-card__meta-icon"/>
-                      {item.fullName}
+                          <span className="field-value">
+                            {(() => {
+                              const parts = item.fullName.split(' ');
+                              if (parts.length === 1) return parts[0];
+                              const [first, ...rest] = parts;
+                              return (
+                                <>
+                                  {first}<br/>
+                                  {rest.join(' ')}
+                                </>
+                              );
+                            })()}
+                          </span>
                     </span>
                     <span className="progress-card__meta-item">
                       <span
@@ -348,7 +424,7 @@ function MyLearningProgress() {
                   <div className="progress-card__actions">
                     <button
                       className="progress-card__button progress-card__button--edit"
-                      onClick={() => navigate(`/updateLearningProgress/${item.id}`)}
+                      onClick={() => navigate(`/updateLearningProgress/${item.id}${qs}`)}
                     >
                       <FaEdit/> Edit
                     </button>
@@ -370,7 +446,7 @@ function MyLearningProgress() {
                   : 'User ID not found in local storage.'}
               </p>
               <button
-                onClick={() => navigate('/addLearningProgress')}
+                onClick={() => navigate(`/addLearningProgress${qs}`)}
                 className="progress-empty__link"
               >
                 <FaPlus/> Create a new learning progress

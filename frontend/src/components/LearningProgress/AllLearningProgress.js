@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaBook,
   FaStar,
@@ -21,7 +22,13 @@ const getProgressColor = val => {
 
 
 function AllLearningProgress() {
+ 
+  
   const [learningProgress, setLearningProgress] = useState([]);
+  // read + write ?template=… in the URL
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialFilter = searchParams.get('template') || '';
+  const [selectedTemplate, setSelectedTemplate] = useState(initialFilter);
 
   useEffect(() => {
     (async () => {
@@ -40,6 +47,17 @@ function AllLearningProgress() {
     })();
   }, []);
 
+      // derive filtered list based on selected template
+      const visibleCards = selectedTemplate
+      ? learningProgress.filter(item => item.templateName === selectedTemplate)
+      : learningProgress;
+
+
+
+
+
+
+  
   const getTemplateColor = (name) => {
     switch (name) {
       case 'Completed Tutorials': return '#3ea99f';
@@ -58,15 +76,40 @@ function AllLearningProgress() {
     }
   };
 
+  
+
   return (
     <div className="learning-progress">
       <LearningNavbar />
 
+
+       {/* Filter controls */}
+       <div className="progress-filter">
+        <label htmlFor="templateFilter">Show:</label>
+        <select
+          id="templateFilter"
+          value={selectedTemplate}
+          onChange={e => {
+                 const v = e.target.value;
+                 setSelectedTemplate(v);
+                 // add or remove the ?template= param
+                 if (v)      searchParams.set('template', v);
+                 else         searchParams.delete('template');
+                 setSearchParams(searchParams, { replace: true });
+               }}
+        >
+          <option value="">All</option>
+          <option value="Completed Tutorials">Completed Tutorials</option>
+          <option value="New Skill Learned">New Skill Learned</option>
+          <option value="Milestone Achieved">Milestone Achieved</option>
+        </select>
+      </div>
+
       <div className="progress-container">
         <div className="progress-container__inner">
-          {learningProgress.length > 0 ? (
+        {visibleCards.length > 0 ? (
             <div className="progress-grid">
-              {learningProgress.map(item => (
+               {visibleCards.map(item => (
                 <div
                   key={item.id}
                   className="progress-card"
@@ -80,7 +123,20 @@ function AllLearningProgress() {
                   <div className="progress-card__meta">
                     <span className="progress-card__meta-item">
                       <FaUser className="progress-card__meta-icon"/>
-                      <span className="field-value">{item.fullName}</span>
+                      <span className="field-value">
+                        {(() => {
+                          const parts = item.fullName.split(' ');
+                          if (parts.length === 1) return parts[0];           // single-word names
+                          const [first, ...rest] = parts;                  
+                          return (
+                            <>
+                              {first}<br/>
+                              {rest.join(' ')}
+                            </>
+                          );
+                        })()}
+                      </span>
+
                     </span>
                     <span className="progress-card__meta-item">
                       <span

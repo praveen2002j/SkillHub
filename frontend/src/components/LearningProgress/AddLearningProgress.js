@@ -90,7 +90,11 @@ function AddLearningProgress() {
     if (formData.templateName === 'New Skill Learned') {
       if (!formData.skillName.trim()) newErrors.skillName = 'Skill name is required';
       if (!formData.proficiencyLevel.trim()) newErrors.proficiencyLevel = 'Proficiency level is required';
-      if (!formData.practiceTime.trim()) newErrors.practiceTime = 'Practice time is required';
+      const pt = parseFloat(formData.practiceTime);
+      if (isNaN(pt) || pt <= 0) {
+        newErrors.practiceTime = 'Please enter a positive number of hours';
+      }
+
       if (!formData.newProgress || isNaN(formData.newProgress)) {
         newErrors.newProgress = 'Please enter a valid number (0-100)';
       } else if (formData.newProgress < 0 || formData.newProgress > 100) {
@@ -298,14 +302,15 @@ function AddLearningProgress() {
                   <div className={`form-group ${errors.duration ? 'has-error' : ''}`}>
                     <label className="form-label">Duration (Hours)*</label>
                     <input 
-                      type='number' 
-                      name='duration' 
+                      type="number" 
+                      name="duration" 
                       value={formData.duration} 
                       onChange={handleChange}
                       className="form-input"
                       placeholder="e.g., 4"
-                      min="0"
-                      step="0.5" // optional if you want to allow 0.5-hour steps
+                      min="0.1"        /* disallow zero or negative */
+                      step="0.1"       /* allow decimal hours */
+                      required
                     />
                     {errors.duration && <span className="error-message">{errors.duration}</span>}
                   </div>
@@ -408,17 +413,21 @@ function AddLearningProgress() {
                   </div>
                   
                   <div className={`form-group ${errors.practiceTime ? 'has-error' : ''}`}>
-                    <label className="form-label">Practice Time*</label>
+                    <label className="form-label">Practice Time (hrs)*</label>
                     <input 
-                      type='text' 
-                      name='practiceTime' 
-                      value={formData.practiceTime} 
+                      type="number"
+                      name="practiceTime"
+                      value={formData.practiceTime || ''}
                       onChange={handleChange}
                       className="form-input"
-                      placeholder="e.g., 10 hours"
+                      placeholder="e.g., 4"
+                      min="0.1"       /* disallow zero or negative */
+                      step="0.1"      /* allow decimal hours */
+                      required
                     />
                     {errors.practiceTime && <span className="error-message">{errors.practiceTime}</span>}
                   </div>
+
                 </div>
                 
                 <div className={`form-group ${errors.newProgress ? 'has-error' : ''}`}>

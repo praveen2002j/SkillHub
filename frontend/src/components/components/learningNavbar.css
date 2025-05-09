@@ -1,9 +1,10 @@
 .learning-navbar {
-    background-color: #1e3a8a;
+    
     padding: 10px 20px;
     display: flex;
     gap: 20px;
     align-items: center;
+    background-color: #4285F4;
   }
   
   .nav-link {
@@ -30,7 +31,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #1e3a8a;
+    
     color: white;
   }
   

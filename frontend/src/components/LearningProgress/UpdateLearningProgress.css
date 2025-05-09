@@ -1,0 +1,30 @@
+/* UpdateLearningProgress.css */
+
+/* Make the whole page background a light slate */
+.update-learning-progress {
+    min-height: 100vh;
+    background-color:  #1E3A8A;
+  }
+  
+  /* Override your navbar color here */
+  .learning-navbar {
+    background-color: #4285F4;  /* Google-blue */
+    color: white;
+  }
+  
+  /* Optional: tweak the page container so the form sits nicely */
+  .page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+  }
+  
+  /* If you want the form wrapper itself to stand out */
+  .form-wrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  

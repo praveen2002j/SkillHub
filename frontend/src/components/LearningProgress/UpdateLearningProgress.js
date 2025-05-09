@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { FaBook, FaStar, FaFlagCheckered, FaArrowLeft } from 'react-icons/fa';
+
+import './UpdateLearningProgress.css';
 import LearningNavbar from '../components/LearningNavbar';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 
 function UpdateLearningProgress() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  
+
+    // ─── read current template filter suffix ─────────────────────
+  const [searchParams] = useSearchParams();
+  const filter = searchParams.get('template') || '';
+  const qs     = filter ? `?template=${encodeURIComponent(filter)}` : '';
 
   const [formData, setFormData] = useState({
     title: '',
@@ -165,7 +174,7 @@ function UpdateLearningProgress() {
   
       if (response.ok) {
         alert('Learning progress updated successfully!');
-        navigate('/myLearningProgress'); // ✅ This redirects without page reload
+        navigate(`/myLearningProgress${qs}`); // ✅ This redirects without page reload
       } else {
         alert('Failed to update learning progress.');
       }
@@ -191,7 +200,9 @@ function UpdateLearningProgress() {
     }
   };
 
+
   return (
+    
     <div className="update-learning-progress">
       <LearningNavbar />
 
@@ -281,17 +292,21 @@ function UpdateLearningProgress() {
                   </div>
                   
                   <div className={`form-group ${errors.duration ? 'has-error' : ''}`}>
-                    <label className="form-label">Duration*</label>
+                  <label className="form-label">Duration (Hours)*</label>
                     <input 
-                      type='text' 
-                      name='duration' 
+                      type="number" 
+                      name="duration" 
                       value={formData.duration} 
                       onChange={handleChange}
                       className="form-input"
-                      placeholder="e.g., 2 hours"
+                      placeholder="e.g., 4"
+                      min="0.1"        /* disallow zero or negative */
+                      step="0.1"       /* allow decimal hours */
+                      required
                     />
                     {errors.duration && <span className="error-message">{errors.duration}</span>}
                   </div>
+
                 </div>
                 
                 <div className={`form-group ${errors.tutorialName ? 'has-error' : ''}`}>
@@ -387,19 +402,22 @@ function UpdateLearningProgress() {
                     </select>
                     {errors.proficiencyLevel && <span className="error-message">{errors.proficiencyLevel}</span>}
                   </div>
-                  
                   <div className={`form-group ${errors.practiceTime ? 'has-error' : ''}`}>
-                    <label className="form-label">Practice Time*</label>
+                    <label className="form-label">Practice Time (hrs)*</label>
                     <input 
-                      type='text' 
-                      name='practiceTime' 
-                      value={formData.practiceTime} 
+                      type="number"
+                      name="practiceTime"
+                      value={formData.practiceTime || ''}
                       onChange={handleChange}
                       className="form-input"
-                      placeholder="e.g., 10 hours"
+                      placeholder="e.g., 4"
+                      min="0.1"       /* disallow zero or negative */
+                      step="0.1"      /* allow decimal hours */
+                      required
                     />
                     {errors.practiceTime && <span className="error-message">{errors.practiceTime}</span>}
                   </div>
+
                 </div>
                 
                 <div className={`form-group ${errors.newProgress ? 'has-error' : ''}`}>
