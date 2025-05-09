@@ -46,6 +46,10 @@ function SignIn() {
       data: datas
     });
 
+///
+    console.log("Login response:", response.data); // ✅ ADD HERE
+
+
     if (response.data !== null && response.data.status === "fail") {
       setSnackbarMessage(response.data.message);
       setSnackbarOpen(true);
@@ -60,6 +64,15 @@ function SignIn() {
       localStorage.setItem("psnUserEmail", response.data.payload.user.email);
       localStorage.setItem("psnBio", response.data.payload.user.bio);
       localStorage.setItem("psnToken", response.data.payload.token);
+
+      ////
+      const userId = response.data.payload.user.id;
+      const fullName = response.data.payload.user.firstName + ' ' + response.data.payload.user.lastName;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('fullName', fullName);
+    
+
+
       navigate("/newsfeed");
     }
   }
@@ -98,6 +111,14 @@ function SignIn() {
       localStorage.setItem("psnUserLastName", response.data.payload.user.lastName);
       localStorage.setItem("psnUserEmail", response.data.payload.user.email);
       localStorage.setItem("psnToken", response.data.payload.token);
+
+
+      // ✅ Add these 2 lines:
+      const userId = response.data.payload.user.id;
+      const fullName = response.data.payload.user.firstName + ' ' + response.data.payload.user.lastName;
+      localStorage.setItem('userId', userId);       // Used in MyLearningProgress
+      localStorage.setItem('fullName', fullName);   // Optional for display
+
       navigate("/newsfeed");
     }
   }

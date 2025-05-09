@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Build & test the back end
+      - name: Build & test backend
+        working-directory: Backend
+        run: mvn clean verify
+
+      # 3. Set up Node.js for the front end
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # 4. Install & test the front end
+      - name: Install & test frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm test

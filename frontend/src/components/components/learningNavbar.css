@@ -1,0 +1,61 @@
+.learning-navbar {
+    
+    padding: 10px 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background-color: #4285F4;
+  }
+  
+  .nav-link {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+  }
+  
+  .nav-link:hover {
+    color: #93c5fd;
+  }
+  
+  .nav-icon {
+    font-size: 1.2rem;
+  }
+
+
+  .learning-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    
+    color: white;
+  }
+  
+  .nav-left .nav-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .nav-right {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .nav-link:hover {
+    color: #93c5fd;
+  }
+  
+  
