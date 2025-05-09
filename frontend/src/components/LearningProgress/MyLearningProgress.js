@@ -45,6 +45,8 @@ ChartJS.register(
 
 function MyLearningProgress() {
   const [learningProgress, setLearningProgress] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState('');  // 
+
   const [userID, setUserID] = useState(null);
   const navigate = useNavigate();
 
@@ -169,6 +171,12 @@ function MyLearningProgress() {
     return <FaBook className="progress-card__icon"/>;
   };
 
+
+  // filter before render
+  const visibleCards = selectedTemplate
+  ? learningProgress.filter(p => p.templateName === selectedTemplate)
+  : learningProgress;
+
   return (
     <div className="my-learning-progress">
       <LearningNavbar/>
@@ -179,11 +187,27 @@ function MyLearningProgress() {
         </div>
       </div>
 
+
+      <div className="progress-filter">
+        <label htmlFor="templateFilter">Show:</label>
+        <select
+          id="templateFilter"
+          value={selectedTemplate}
+          onChange={e => setSelectedTemplate(e.target.value)}
+        >
+          <option value="">All</option>
+          <option value="Completed Tutorials">Completed Tutorials</option>
+          <option value="New Skill Learned">New Skill Learned</option>
+          <option value="Milestone Achieved">Milestone Achieved</option>
+        </select>
+      </div>
+
+
       <div className='progress-container'>
         <div className='progress-container__inner'>
-          {learningProgress.length > 0 ? (
+          {visibleCards.length > 0 ? (
             <div className="progress-grid">
-              {learningProgress.map(item => (
+               {visibleCards.map(item => (
                 <div
                   key={item.id}
                   className="progress-card"

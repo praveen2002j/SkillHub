@@ -22,6 +22,8 @@ const getProgressColor = val => {
 
 function AllLearningProgress() {
   const [learningProgress, setLearningProgress] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState('');  // 
+  
 
   useEffect(() => {
     (async () => {
@@ -40,6 +42,17 @@ function AllLearningProgress() {
     })();
   }, []);
 
+      // derive filtered list based on selected template
+      const visibleCards = selectedTemplate
+      ? learningProgress.filter(item => item.templateName === selectedTemplate)
+      : learningProgress;
+
+
+
+
+
+
+  
   const getTemplateColor = (name) => {
     switch (name) {
       case 'Completed Tutorials': return '#3ea99f';
@@ -58,15 +71,33 @@ function AllLearningProgress() {
     }
   };
 
+  
+
   return (
     <div className="learning-progress">
       <LearningNavbar />
 
+
+       {/* Filter controls */}
+       <div className="progress-filter">
+        <label htmlFor="templateFilter">Show:</label>
+        <select
+          id="templateFilter"
+          value={selectedTemplate}
+          onChange={e => setSelectedTemplate(e.target.value)}
+        >
+          <option value="">All</option>
+          <option value="Completed Tutorials">Completed Tutorials</option>
+          <option value="New Skill Learned">New Skill Learned</option>
+          <option value="Milestone Achieved">Milestone Achieved</option>
+        </select>
+      </div>
+
       <div className="progress-container">
         <div className="progress-container__inner">
-          {learningProgress.length > 0 ? (
+        {visibleCards.length > 0 ? (
             <div className="progress-grid">
-              {learningProgress.map(item => (
+               {visibleCards.map(item => (
                 <div
                   key={item.id}
                   className="progress-card"

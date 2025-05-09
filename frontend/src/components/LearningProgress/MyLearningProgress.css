@@ -416,3 +416,35 @@
 }
 
 
+/* ─── Filter dropdown ───────────────────────────────────────────────────────── */
+.progress-filter {
+  max-width: 1200px;
+  margin: 2.5rem auto 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.progress-filter label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.progress-filter select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.95rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.progress-filter select:focus {
+  outline: none;
+  border-color: #3ea99f;
+}
+
