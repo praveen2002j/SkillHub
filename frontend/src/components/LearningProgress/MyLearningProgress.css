@@ -9,12 +9,12 @@
 
 .my-learning-progress {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #1E3A8A;
 }
 
 /* Navigation Bar */
 .nav-bar {
-  background-color: #2c3e50;
+  background-color:#4285F4;
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -62,10 +62,11 @@
 .progress-chart {
   padding: 2rem;
   background-color: white;
-  margin: 1rem auto;
+  
   max-width: 1200px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin: 3.5rem auto 1rem;
 }
 
 .progress-chart__container {
@@ -443,14 +444,14 @@
 .progress-filter label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #34495e;
+  color: #f2f4f8;
 }
 
 .progress-filter select {
   padding: 0.5rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: white;
+  background-color: #f2f4f8;
   font-size: 0.95rem;
   color: #2c3e50;
   cursor: pointer;

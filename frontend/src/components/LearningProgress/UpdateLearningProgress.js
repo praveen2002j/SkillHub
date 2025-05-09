@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaBook, FaStar, FaFlagCheckered, FaArrowLeft } from 'react-icons/fa';
+
+import './UpdateLearningProgress.css';
 import LearningNavbar from '../components/LearningNavbar';
 
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -8,6 +10,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 function UpdateLearningProgress() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  
 
     // ─── read current template filter suffix ─────────────────────
   const [searchParams] = useSearchParams();
@@ -196,7 +200,9 @@ function UpdateLearningProgress() {
     }
   };
 
+
   return (
+    
     <div className="update-learning-progress">
       <LearningNavbar />
 
