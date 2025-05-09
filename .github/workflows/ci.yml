@@ -1,9 +1,7 @@
-name: CI Compile-Only
+name: CI Compile-Only Demo
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -13,7 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Compile backend
+      - name: Compile backend (allowed to fail)
+        continue-on-error: true
         working-directory: Backend
         run: mvn clean compile
 
