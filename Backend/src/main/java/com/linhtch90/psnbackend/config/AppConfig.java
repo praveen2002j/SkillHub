@@ -1,3 +1,4 @@
+
 package com.linhtch90.psnbackend.config;
 
 import org.springframework.context.annotation.Bean;

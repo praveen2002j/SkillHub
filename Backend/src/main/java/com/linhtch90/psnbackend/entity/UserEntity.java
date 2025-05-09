@@ -36,5 +36,13 @@ public class UserEntity {
 
     List<String> follower = new ArrayList<>();
 
+    public Object getFollowing() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setPassword(String string) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
 
