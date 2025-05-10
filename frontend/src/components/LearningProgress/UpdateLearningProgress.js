@@ -45,6 +45,7 @@ function UpdateLearningProgress() {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const DEFAULT_PROGRESS = 100;
 
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
@@ -56,9 +57,9 @@ function UpdateLearningProgress() {
           console.error('No token found');
           return;
         }
-  
+
         const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
-          method: 'GET',
+          method: 'GET',  // ← HTTP GET to load the form
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -76,6 +77,7 @@ function UpdateLearningProgress() {
     };
   
     fetchData();
+     // … handle 200 OK and populate formData …
   }, [id]);
   
   const handleChange = (e) => {
@@ -163,18 +165,18 @@ function UpdateLearningProgress() {
       console.log("Submitting update with:", data); // optional debug
       
       const response = await fetch(`http://localhost:8080/learningProgress/${id}`, {
-        method: 'PUT',
+        method: 'PUT',  // ← HTTP PUT to save edits
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // ✅ Send token here
+          'Authorization': `Bearer ${token}` //  Send token here
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data), // ← JSON payload of updated fields
 
       });
   
       if (response.ok) {
         alert('Learning progress updated successfully!');
-        navigate(`/myLearningProgress${qs}`); // ✅ This redirects without page reload
+        navigate(`/myLearningProgress${qs}`); //  This redirects without page reload
       } else {
         alert('Failed to update learning progress.');
       }
@@ -322,19 +324,16 @@ function UpdateLearningProgress() {
                   {errors.tutorialName && <span className="error-message">{errors.tutorialName}</span>}
                 </div>
                 
-                <div className={`form-group ${errors.completedProgress ? 'has-error' : ''}`}>
-                  <label className="form-label">Progress (%)*</label>
-                  <input 
-                    type='number' 
-                    name='completedProgress' 
-                    value={formData.completedProgress} 
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="0-100"
-                    min="0"
-                    max="100"
+                <div className="form-group">
+                  <label htmlFor="completedProgress">Completed Progress (%)</label>
+                  <input
+                    id="completedProgress"
+                    type="number"
+                    name="completedProgress"
+                    value={DEFAULT_PROGRESS}
+                    readOnly                   // ← makes it non‐editable
+                    className="form-control"   // ← your existing styling
                   />
-                  {errors.completedProgress && <span className="error-message">{errors.completedProgress}</span>}
                 </div>
                 
                 <div className={`form-group ${errors.keyTakeaways ? 'has-error' : ''}`}>
@@ -488,20 +487,17 @@ function UpdateLearningProgress() {
                     {errors.dateAchieved && <span className="error-message">{errors.dateAchieved}</span>}
                   </div>
                   
-                  <div className={`form-group ${errors.milestoneProgress ? 'has-error' : ''}`}>
-                    <label className="form-label">Progress (%)*</label>
-                    <input 
-                      type='number' 
-                      name='milestoneProgress' 
-                      value={formData.milestoneProgress ?? ''}
-                      onChange={handleChange}
-                      className="form-input"
-                      placeholder="0-100"
-                      min="0"
-                      max="100"
-                    />
-                    {errors.milestoneProgress && <span className="error-message">{errors.milestoneProgress}</span>}
-                  </div>
+                  <div className="form-group">
+                  <label htmlFor="milestoneProgress">Milestone Progress (%)</label>
+                  <input
+                    id="milestoneProgress"
+                    type="number"
+                    name="milestoneProgress"
+                    value={DEFAULT_PROGRESS}
+                    readOnly
+                    className="form-control"
+                  />
+                </div>
                 </div>
                 
                 <div className={`form-group ${errors.proof ? 'has-error' : ''}`}>

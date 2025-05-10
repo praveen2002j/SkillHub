@@ -23,11 +23,15 @@ public class LearningProgressController {
     @Autowired
     private LearningProgressRepository repository;
 
-
+    /**
+     * Create a new LearningProgress entry. Accepts multipart/form-data for optional file upload.
+     * Returns 201 Created on success.
+     */
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)  // Explicit 200 status
     public LearningProgressModel createLearningProgress(
             @ModelAttribute LearningProgressModel model,
             @RequestPart(value = "proofFile", required = false) MultipartFile proofFile
@@ -42,6 +46,7 @@ public class LearningProgressController {
                 proofFile.transferTo(target);
                 model.setProofUrl("/uploads/" + filename);
             } catch (IOException e) {
+                // On file I/O error, respond with 500 Internal Server Error
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                         "Could not save image", e);
             }
@@ -50,11 +55,22 @@ public class LearningProgressController {
         return repository.save(model);
     }
 
+
+    /**
+     * Retrieve all LearningProgress entries.
+     * Returns 200 OK with JSON array.
+     */
     @GetMapping
     public List<LearningProgressModel> getAllLearningProgress() {
         return repository.findAll();
     }
 
+
+
+    /**
+     * Retrieve a single entry by ID.
+     * Returns 200 OK if found, or 404 Not Found if missing.
+     */
     @GetMapping("/{id}")
     public LearningProgressModel getLearningProgressById(@PathVariable String id) {
         return repository.findById(id)
@@ -63,17 +79,26 @@ public class LearningProgressController {
                 );
     }
 
+
+
+
+    /**
+     * Update an existing entry.
+     * Consumes application/json, returns 200 OK with updated model or 404 if not found.
+     */
     @PutMapping(
             value    = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.OK)
     public LearningProgressModel updateLearningProgress(
             @PathVariable String id,
-            @RequestBody LearningProgressModel updatedModel
+            @RequestBody LearningProgressModel updatedModel // JSON payload
     ) {
         return repository.findById(id)
                 .map(existingModel -> {
+                    // Copy fields from payload to existing entity
                     existingModel.setFullName(updatedModel.getFullName());
                     existingModel.setUserID(updatedModel.getUserID());
                     existingModel.setTitle(updatedModel.getTitle());
@@ -96,6 +121,7 @@ public class LearningProgressController {
                     existingModel.setProofUrl(updatedModel.getProofUrl());
                     existingModel.setMilestoneProgress(updatedModel.getMilestoneProgress());
                     existingModel.setNotes(updatedModel.getNotes());
+                    // Save back to database
                     return repository.save(existingModel);
                 })
                 .orElseThrow(() ->
@@ -103,9 +129,16 @@ public class LearningProgressController {
                 );
     }
 
+
+    /**
+     * Delete an entry by ID.
+     * Returns 204 No Content on success, or 404 if ID missing.
+     */
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLearningProgress(@PathVariable String id) {
         if (!repository.existsById(id)) {
+            // Throw 404 if not found
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No record with id=" + id);
         }
         repository.deleteById(id);

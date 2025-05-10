@@ -53,7 +53,7 @@ function MyLearningProgress() {
     // ─── build query-suffix for filter persistence ───────────────────
   const filter = searchParams.get('template') || '';
   const qs     = filter ? `?template=${encodeURIComponent(filter)}` : '';
-
+  const DEFAULT_PROGRESS = 100;
   const [userID, setUserID] = useState(null);
   const navigate = useNavigate();
 
@@ -74,15 +74,15 @@ function MyLearningProgress() {
           alert('You are not logged in. Please sign in.');
           return;
         }
-
+// <<< API CALL: fetch all progress (200 OK) >>>
         const response = await fetch('http://localhost:8080/learningProgress', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json'  // ← tells backend we expect JSON
           }
         });
-
+ // … parse JSON, set state …
         if (response.ok) {
           const data = await response.json();
           const filtered = data.filter(item => item.userID === storedUserId);
@@ -107,10 +107,12 @@ function MyLearningProgress() {
         window.location.href = '/signin';
         return;
       }
+       // <<< API CALL: delete record (204 No Content) >>>
       const res = await fetch(`http://localhost:8080/learningProgress/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
+       // … update UI on success …
       if (res.ok) {
         setLearningProgress(prev => prev.filter(p => p.id !== id));
         alert('Deleted successfully!');
