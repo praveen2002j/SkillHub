@@ -33,7 +33,7 @@ function AddLearningProgress() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const DEFAULT_PROGRESS = 100;
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
   const handleChange = (e) => {
@@ -156,15 +156,15 @@ function AddLearningProgress() {
         alert('You are not logged in. Please sign in.');
         return window.location.href = '/signin';
       }
-  
+       // <<< API CALL: create new record (201 Created) >>>
       const res = await fetch('http://localhost:8080/learningProgress', {
-        method: 'POST',
+        method: 'POST',   // ← HTTP method
         headers: {
-          Authorization: `Bearer ${token}`     // <–– notice: no Content-Type header
+          Authorization: `Bearer ${token}`   // ← auth header
         },
-        body: payload
+        body: payload  // ← FormData (multipart/form-data)
       });
-  
+    // … handle response …
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || 'Upload failed');
@@ -330,22 +330,17 @@ function AddLearningProgress() {
                   {errors.tutorialName && <span className="error-message">{errors.tutorialName}</span>}
                 </div>
                 
-                <div className={`form-group ${errors.completedProgress ? 'has-error' : ''}`}>
-                  <label className="form-label">Progress (%)*</label>
-                  <input 
-                    type='number' 
-                    name='completedProgress' 
-                    value={formData.completedProgress} 
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="0-100"
-                    min="0"
-                    max="100"
-                    disabled={formData.templateName === 'Completed Tutorials'}
+                <div className="form-group">
+                  <label htmlFor="completedProgress">Completed Progress (%)</label>
+                  <input
+                    id="completedProgress"
+                    type="number"
+                    name="completedProgress"
+                    value={DEFAULT_PROGRESS}
+                    readOnly                   // ← makes it non‐editable
+                    className="form-control"   // ← your existing styling
                   />
-                  {errors.completedProgress && <span className="error-message">{errors.completedProgress}</span>}
                 </div>
-                
                 <div className={`form-group ${errors.keyTakeaways ? 'has-error' : ''}`}>
                   <label className="form-label">Key Takeaways*</label>
                   <textarea 
@@ -497,22 +492,17 @@ function AddLearningProgress() {
                     />
                     {errors.dateAchieved && <span className="error-message">{errors.dateAchieved}</span>}
                   </div>
-                  
-                  <div className={`form-group ${errors.milestoneProgress ? 'has-error' : ''}`}>
-                    <label className="form-label">Progress (%)*</label>
-                    <input 
-                      type='number' 
-                      name='milestoneProgress' 
-                      value={formData.milestoneProgress} 
-                      onChange={handleChange}
-                      className="form-input"
-                      placeholder="0-100"
-                      min="0"
-                      max="100"
-                      disabled={formData.templateName === 'Milestone Achieved'}
-                    />
-                    {errors.milestoneProgress && <span className="error-message">{errors.milestoneProgress}</span>}
-                  </div>
+                  <div className="form-group">
+                  <label htmlFor="completedProgress">Completed Progress (%)</label>
+                  <input
+                    id="completedProgress"
+                    type="number"
+                    name="completedProgress"
+                    value={DEFAULT_PROGRESS}
+                    readOnly                   // ← makes it non‐editable
+                    className="form-control"   // ← your existing styling
+                  />
+                </div>
                 </div>
                 
                 <div className={`form-group ${errors.proof ? 'has-error' : ''}`}>
